@@ -2,11 +2,10 @@ open Xml
 open Frontend
 
 let main () =
-  let type_file, xml_file =
+  let type_file, xml_file, _rac =
     match Sys.argv with
-    | [| _; type_file; xml_file |] -> type_file, xml_file
-    (* | [| _; type_file |] -> type_file, Obj.magic () *)
-    | _ -> Format.eprintf "Argument requis\n%!"; exit 1
+    | [| _; type_file; xml_file; rac |] -> type_file, xml_file, rac
+    | _ -> Format.eprintf "Arguments requis\n%!"; exit 1
   in
 
   let tin = open_in type_file in
