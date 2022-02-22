@@ -7,14 +7,13 @@ OCAMLC     = ocamlopt
 
 BAZAR =
 
-
 .PHONY: all
 all:
 	dune build
 
 .PHONY: exec
-exec:
-	dune exec -- src/validate.exe
+test0:
+	dune exec -- ./src/validate.exe tests/ex.typ tests/1.xml t
 
 .PHONY: clean
 clean:
