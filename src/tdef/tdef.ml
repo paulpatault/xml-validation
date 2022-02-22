@@ -4,8 +4,8 @@ type regex =
   | Epsilon
   | Ident of ident
   | Concat of regex * regex
-  | Start of regex
-  | Or of regex * regex
+  | Star of regex
+  | Alt of regex * regex
 
 type guard =
   | Label of ident

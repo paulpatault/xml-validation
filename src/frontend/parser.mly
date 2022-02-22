@@ -2,8 +2,10 @@
   (* open Tdef *)
 %}
 
-%token STAR
+%token ALT
+%token STAR QUESTION
 %token LB RB
+%token LP RP
 %token <string> IDENT
 %token TYPE
 %token EQUAL
@@ -22,14 +24,19 @@ type_def:
 | TYPE id=IDENT EQUAL g=guard LB r=regex RB { (id, g, r) }
 ;
 
-regex:
-| { Tdef.Epsilon }
-| IDENT { Tdef.Ident $1 }
-/* à compléter */
+regex: { Tdef.Epsilon }
+| IDENT
+  { Tdef.Ident $1 }
+| regex QUESTION
+  { Tdef.Alt (Tdef.Epsilon, $1) }
+| LP r1=regex RP ALT LP r2=regex RP
+  { Tdef.Alt (r1, r2) }
 ;
 
 guard:
-| STAR { Tdef.Star }
-| IDENT { Tdef.Label $1 }
+| STAR
+  { Tdef.Star }
+| IDENT
+  { Tdef.Label $1 }
 /* à compléter */
 ;

@@ -37,8 +37,16 @@ rule token = parse
     { LB }
   | "]"
     { RB }
+  | "("
+    { LP }
+  | ")"
+    { RP }
   | "*"
     { STAR }
+  | "|"
+    { ALT }
+  | "?"
+    { QUESTION }
   | "="
     { EQUAL }
   | eof
