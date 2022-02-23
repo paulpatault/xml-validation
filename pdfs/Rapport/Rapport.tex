@@ -1,0 +1,111 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{Rapport Projet}
+\author{Paul Patault}
+\date{Mars 2022}
+
+\documentclass[a4paper,12pt]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{tikz}
+\usepackage{amsfonts}
+\usepackage{pdfpages}
+\usepackage{graphviz}
+\usepackage{amsthm, amsmath, amssymb, extarrows}
+\usetikzlibrary{decorations.text,calc,arrows.meta}
+\usetikzlibrary{automata,positioning}% Set target color model to RGB
+\usepackage{minted}
+
+\usepackage[french]{babel}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{fancyhdr}
+\usepackage[a4paper, left=3cm, right=3cm, bottom=2.5cm]{geometry}
+
+\pagestyle{fancy}
+\fancyhf{} \rhead{\small M1 MPRI @ Université Paris-Saclay}
+\lhead{\small Paul Patault}
+\rfoot{\thepage}
+\pagenumbering{arabic}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\ocaml}[1]{\mintinline{ocaml}{#1}}
+
+\renewcommand{\baselinestretch}{1.2}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setlength{\headheight}{13.59999pt}
+\addtolength{\topmargin}{-1.59999pt}
+
+
+\begin{center}
+  % \vspace*{.5cm}
+
+  \textbf{\Large Rapport de projet}
+
+  % \vspace*{.5cm}
+
+  % Paul Patault \\
+  {\ttfamily paul.patault@universite-paris-saclay.fr} \\
+
+  % \vspace*{1cm}
+
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection*{2. Validation top-down non-déterministe}
+\subsubsection*{Question 1}
+
+Un run d'un automate d'arbre $A = (Q, \delta, I, F, \Sigma)$
+pour un arbre $t \in {\mathcal{T}}(\Sigma)$
+est une fonction $r : dom(t) \to Q$
+telle que $\forall p \in dom(t), (t(p), r(p), r(p1),r(p2)) \in \delta$.
+Un run est dit acceptant si et seulement si $r (\epsilon) \in I$.
+
+\subsubsection*{Question 2}
+
+  \begin{minted}[baselinestretch=1.2,fontsize=\footnotesize]{ocaml}
+    let rec validate_td a t p q =
+        let lab = label p in
+        if lab = '#' then
+            true
+        else
+            let l = get_trans a lab q in
+            List.fold (fun acc elt ->
+                acc || validate_td a t (elt p) q
+            ) false l
+        (* first_child(p), next_sibling(p) *)
+   \end{minted}
+
+\subsubsection*{Question 3}
+
+La complexité de l'expression
+
+\centerline{
+$\exists$ \ocaml{q} $\in I$ tel que \ocaml{validate_td a t eps q}
+}
+
+est $O(|\ocaml{a}|^{|\ocaml{t}|})$. En effet, l'algorithme
+nous fait prendre $|\ocaml{a}|$ fois chaque arête de l'arbre \ocaml{t}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection*{3. Validation bottom-up}
+\subsubsection*{Question 1}
+\subsubsection*{Question 2}
+\subsubsection*{Question 3}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection*{4. Compilation}
+\subsubsection*{Question 1}
+\subsubsection*{Question 2}
+
+\end{document}

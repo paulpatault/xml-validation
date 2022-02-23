@@ -1,3 +1,10 @@
 **/.DS_Store
 
 _build
+
+pdfs/Rapport/Rapport.synctex.gz
+pdfs/Rapport/Rapport.aux
+pdfs/Rapport/Rapport.fdb_latexmk
+pdfs/Rapport/Rapport.fls
+pdfs/Rapport/Rapport.log
+pdfs/Rapport/_minted-Rapport
