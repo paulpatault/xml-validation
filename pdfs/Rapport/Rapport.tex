@@ -71,17 +71,18 @@ Un run est dit acceptant si et seulement si $r (\epsilon) \in I$.
 
 \subsubsection*{Question 2}
 
-  \begin{minted}[baselinestretch=1.2,fontsize=\footnotesize]{ocaml}
+  \begin{minted}[baselinestretch=1.2,fontsize=\footnotesize, escapeinside=\/, mathescape=true]{ocaml}
     let rec validate_td a t p q =
-        let lab = label p in
-        if lab = '#' then
+        if label p = '#' then
             true
         else
-            let l = get_trans a lab q in
-            List.fold (fun acc elt ->
-                acc || validate_td a t (elt p) q
+            let transition = label p, q in
+            let l = List.filter ((=) transition) a.delta in (* modifier ici *)
+            List.fold (fun acc q' ->
+                acc ||
+                (validate_td a t (p@[first_child p]) q' &&
+                 validate_td a t (p@[next_sibling p]) q')
             ) false l
-        (* first_child(p), next_sibling(p) *)
    \end{minted}
 
 \subsubsection*{Question 3}
