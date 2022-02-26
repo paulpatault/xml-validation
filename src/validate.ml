@@ -1,3 +1,4 @@
+open Compiler
 
 let main () =
   let _type_file, xml_file, _rac =

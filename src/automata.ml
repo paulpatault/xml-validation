@@ -13,3 +13,12 @@ type t = {
   final:  state list;
   sigma:  sigma;
 }
+
+let mk_automata ?states ?delta ?init ?final ?sigma () =
+  {
+    states = Option.value states ~default:[];
+    delta  = Option.value delta  ~default:(F []);
+    init   = Option.value init   ~default:[];
+    final  = Option.value final  ~default:[];
+    sigma  = Option.value sigma  ~default:[];
+  }
