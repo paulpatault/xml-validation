@@ -1,7 +1,5 @@
 
 let main () =
-  let open Frontend in
-
   let _type_file, xml_file, _rac =
     match Sys.argv with
     | [| _; type_file; xml_file; rac |] -> type_file, xml_file, rac

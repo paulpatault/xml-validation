@@ -73,15 +73,15 @@ Un run est dit acceptant si et seulement si $r (\epsilon) \in I$.
 
   \begin{minted}[baselinestretch=1.2,fontsize=\footnotesize, escapeinside=\/, mathescape=true]{ocaml}
     let rec validate_td a t p q =
-        if label p = '#' then
+        if label (t p) = '#' then
             true
         else
-            let transition = label p, q in
+            let transition = label (t p), q in
             let l = List.filter ((=) transition) a.delta in (* modifier ici *)
             List.fold (fun acc q' ->
                 acc ||
-                (validate_td a t (p@[first_child p]) q' &&
-                 validate_td a t (p@[next_sibling p]) q')
+                (validate_td a t (p@[first_child (t p)]) q' &&
+                 validate_td a t (p@[next_sibling (t p)]) q')
             ) false l
    \end{minted}
 
@@ -93,14 +93,43 @@ La complexité de l'expression
 $\exists$ \ocaml{q} $\in I$ tel que \ocaml{validate_td a t eps q}
 }
 
-est $O(|\ocaml{a}|^{|\ocaml{t}|})$. En effet, l'algorithme
-nous fait prendre $|\ocaml{a}|$ fois chaque arête de l'arbre \ocaml{t}.
+est $O(|\ocaml{a}|^{|\ocaml{t}|})$, où $|\ocaml{a}|$ est le nombre de
+transitions de l'automate \ocaml{a}. En effet, l'algorithme
+nous fait prendre au pire $|\ocaml{a}|$ fois chaque arête de l'arbre \ocaml{t}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\pagebreak
 \subsection*{3. Validation bottom-up}
 \subsubsection*{Question 1}
+
+  \begin{minted}[baselinestretch=1.2,fontsize=\footnotesize, escapeinside=\/, mathescape=true]{ocaml}
+    let rec validate_bu a t p =
+        let lab = label (t p) in
+        if lab = '#' then
+            List.filter ((=) ('#',[],[]) a.trans in
+        else
+            let left = validate_bu a t (p@[first_child (t p)]) in
+            let right = validate_bu a t (p@[next_sibling (t p)]) in
+            let res = ref [] in
+            List.iter (fun r -> List.iter (fun l ->
+                let trans = lab, l, r in
+                let possible_states = List.filter ((=) trans) a.trans in
+                res <- possible_states :: !res;
+            ) left) right
+            res
+   \end{minted}
+
 \subsubsection*{Question 2}
+
+La complexité de l'expression
+
+\centerline{
+    (\ocaml{validate_bu a t eps}) $\cap\ I$
+}
+
+est $O(|\ocaml{t}|)$.
+
 \subsubsection*{Question 3}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

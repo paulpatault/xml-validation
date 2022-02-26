@@ -3,4 +3,4 @@
  (flags
   (:standard -w -33))
  ; (flags (:standard -w -32 -w -9 -w -27 -w -39 -w -33))
- (libraries xml-light frontend tree tdef))
+ (libraries xml-light))
