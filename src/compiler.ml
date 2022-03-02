@@ -1,4 +1,4 @@
-let compile (typ: Tdef.t) (entry : Tdef.ident) : Automata.t =
+let compile_typ (typ: Tdef.t) (entry : Tdef.ident) : Automata.t =
 
   let automata = Automata.mk_automata () in
 
@@ -13,4 +13,9 @@ let compile (typ: Tdef.t) (entry : Tdef.ident) : Automata.t =
 
   ) typ;
 
+  assert false
+
+
+let compile_xml (doc : Xml.xml) : Tree.t =
+  let _ = doc in
   assert false
