@@ -1,5 +1,5 @@
 (executable
  (name validate)
  (flags
-  (:standard -w +a-4-33-37-70))
+  (:standard -w +a-4-32-33-37-70))
  (libraries xml-light))
