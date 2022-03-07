@@ -15,8 +15,8 @@ module States : sig type t end
 module Transition :
   sig
     type t =
-        F   of Alphabet.t
-      | CoF of Alphabet.t
+        F   of Alphabet.t * State.t
+      | CoF of Alphabet.t * State.t
   end
 
 module Delta : sig type t end
@@ -34,7 +34,7 @@ val empty : unit -> t
 
 val extends :
   t ->
-  [< `Delta  of Transition.t
+  [< `Trans  of Transition.t
    | `Finals of State.t
    | `Sigma  of Ident.t
    | `States of State.t ] ->

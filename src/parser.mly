@@ -3,7 +3,8 @@
 %}
 
 %token ALT
-%token STAR QUESTION
+%token STAR
+%token QUESTION
 %token LB RB
 %token LP RP
 %token <string> IDENT
@@ -29,6 +30,8 @@ regex: { Tdef.Epsilon }
   { Tdef.Ident $1 }
 | regex QUESTION
   { Tdef.Alt (Tdef.Epsilon, $1) }
+| regex STAR
+  { Tdef.Star $1 }
 | LP r1=regex RP ALT LP r2=regex RP
   { Tdef.Alt (r1, r2) }
 ;

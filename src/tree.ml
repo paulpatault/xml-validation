@@ -27,7 +27,6 @@ let parse input =
 
 let root = function
     t  -> t
-  (* | _ -> invalid_arg "tree.root" *)
 
 let first_child _ n =
   match n with
