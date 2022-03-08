@@ -13,15 +13,12 @@ module State =
   struct
     type t =
       Root of Tdef.ident
-    | Q    of Tdef.ident
-    | Next of Tdef.ident
+    | Star of t
+    | Or   of t * t
+    | Cat  of t * t
     | Bottom
     | Leaf
-    let compare t1 t2 = match t1, t2 with
-      | Root r1, Root r2 -> Ident.compare r1 r2
-      | Bottom, Bottom -> 1
-      | Q q1, Q q2 when q1 = q2 -> 1
-      | _ -> -1
+    let compare t1 t2 = Stdlib.compare t1 t2
   end
 
 module States = Set.Make(State)
@@ -31,13 +28,7 @@ module Transition =
     type t =
         F   of Alphabet.t * State.t * State.t * State.t
       | CoF of Alphabet.t * State.t * State.t * State.t
-    let compare t1 t2 = match t1, t2 with
-        F(s1, q1, s11, s12), F(s2, q2, s21, s22)
-      | CoF(s1, q1, s11, s12), CoF(s2, q2, s21, s22) ->
-          min (Alphabet.compare s1 s2) (State.compare q1 q2)
-          |> min (State.compare s11 s21)
-          |> min (State.compare s12 s22)
-      | _ -> -1
+    let compare t1 t2 = Stdlib.compare t1 t2
   end
 
 module Delta = Set.Make(Transition)
@@ -55,15 +46,16 @@ module Pprinter = struct
     let al = Alphabet.choose alpha in
     Format.fprintf fmt "%s,%a" al pp_alphabet (Alphabet.remove al alpha)
 
-  let pp_state fmt state =
+  let rec pp_state fmt state =
     let open State in
     let open Format in
     match state with
       | Root id -> fprintf fmt "Root_%s" id
-      | Q    id -> fprintf fmt "q_%s" id
-      | Next id -> fprintf fmt "n_%s" id
+      | Star q  -> fprintf fmt "(%a)*" pp_state q
       | Bottom -> fprintf fmt "bottom"
       | Leaf -> fprintf fmt "leaf"
+      | Or (q1,q2) -> fprintf fmt "(%a|%a)" pp_state q1 pp_state q2
+      | Cat (q1,q2) -> fprintf fmt "(%a+%a)" pp_state q1 pp_state q2
 
   let rec pp_states fmt states = if not (States.is_empty states) then
     let state = States.choose states in
@@ -74,7 +66,7 @@ module Pprinter = struct
     match trans with
     | CoF (alpha, state, s1, s2)
     | F   (alpha, state, s1, s2) ->
-        Format.fprintf fmt "%a,%a -> %a,%a"
+        Format.fprintf fmt "[%a,%a -> %a,%a]"
           pp_alphabet alpha
           pp_state state
           pp_state s1

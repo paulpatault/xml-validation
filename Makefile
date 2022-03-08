@@ -11,7 +11,7 @@ all:
 	dune build
 
 test0:
-	dune exec -- ./src/validate.exe tests/ex.typ tests/1.xml t
+	dune exec -- ./src/validate.exe tests/ex.typ tests/1.xml x
 
 clean:
 	dune clean

@@ -1,5 +1,5 @@
-type t = A[ (x*) | (y) ]
-type x = B[]
+/* type t = A[ (x*) | (y) ] */
+type x = B[y]
 type y = C[]
 
 /* states =
