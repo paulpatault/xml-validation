@@ -1,7 +1,6 @@
 type label = string
-
+type t = Node of label * t * t | Leaf
 type node = t
-and t = Node of label * t * t | Leaf
 
 let rec bt = function
   | [] -> Leaf
@@ -22,15 +21,15 @@ let parse input =
   in
   r
 
-let root = function t -> t
+let root = function Leaf -> invalid_arg "tree.root" | _ as t -> t
 
-let first_child _ n =
-  match n with Node (_, x, _) -> x | _ -> invalid_arg "tree.first_child"
+let first_child _ = function
+  | Node (_, l, _) -> l
+  | _ -> invalid_arg "tree.first_child"
 
-let next_sibling _ n =
-  match n with Node (_, _, x) -> x | _ -> invalid_arg "tree.next_sibling"
+let next_sibling _ = function
+  | Node (_, _, r) -> r
+  | _ -> invalid_arg "tree.next_sibling"
 
-let label _ n =
-  match n with Node (l, _, _) -> l | _ -> invalid_arg "tree.label"
-
-let is_empty _ n = match n with Leaf -> true | _ -> false
+let label _ = function Node (lab, _, _) -> lab | _ -> invalid_arg "tree.label"
+let is_empty _ = function Leaf -> true | _ -> false

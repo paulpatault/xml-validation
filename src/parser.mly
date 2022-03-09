@@ -1,5 +1,5 @@
 %{
-  (* open Tdef *)
+  open Tdef
 %}
 
 %token ALT
@@ -13,7 +13,7 @@
 %token EOF
 
 %start type_defs
-%type <Tdef.t> type_defs
+%type <DTD.t> type_defs
 
 %%
 
@@ -25,21 +25,21 @@ type_def:
 | TYPE id=IDENT EQUAL g=guard LB r=regex RB { (id, g, r) }
 ;
 
-regex: { Tdef.Epsilon }
+regex: { DTD.Epsilon }
 | IDENT
-  { Tdef.Ident $1 }
+  { DTD.Ident $1 }
 | regex QUESTION
-  { Tdef.Alt (Tdef.Epsilon, $1) }
+  { DTD.Alt (DTD.Epsilon, $1) }
 | regex STAR
-  { Tdef.Star $1 }
+  { DTD.Star $1 }
 | LP r1=regex RP ALT LP r2=regex RP
-  { Tdef.Alt (r1, r2) }
+  { DTD.Alt (r1, r2) }
 ;
 
 guard:
 | STAR
-  { Tdef.Star }
+  { DTD.Star }
 | IDENT
-  { Tdef.Label $1 }
+  { DTD.Label $1 }
 /* à compléter */
 ;

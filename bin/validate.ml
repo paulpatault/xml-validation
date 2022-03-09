@@ -16,6 +16,6 @@ let main () =
   let automata = Compiler.compile_typ tdefs rac in
   let fmt = Format.std_formatter in
 
-  Format.fprintf fmt "%a@.%a" Tree.pp t Automata.Pprinter.pp_autom automata
+  Format.fprintf fmt "%a@.%a" Tree.pp t Tree_automata.Pprinter.pp_autom automata
 
 let () = main ()

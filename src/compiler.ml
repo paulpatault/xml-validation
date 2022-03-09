@@ -1,4 +1,6 @@
-let mkhsh (typ : Tdef.t) =
+open Tdef
+
+let mkhsh (typ : DTD.t) =
   let h = Hashtbl.create 42 in
 
   List.iter
@@ -10,50 +12,32 @@ let mkhsh (typ : Tdef.t) =
     typ;
   h
 
-let rec comp re h =
-  let bot = Automata.State.Bottom in
-  let open Tdef in
-  match re with
-  | Epsilon -> bot
-  | Ident i ->
-      let ll = Hashtbl.find h i in
-      List.fold_left
-        (fun acc (_, re) -> Automata.State.Or (acc, comp re h))
-        bot ll
-  | Star re -> comp re h
-  | Alt (r1, r2) ->
-      let r1 = comp r1 h in
-      let r2 = comp r2 h in
-      Automata.State.Or (r1, r2)
-  | Concat (r1, r2) ->
-      let r1 = comp r1 h in
-      let r2 = comp r2 h in
-      Automata.State.Cat (r1, r2)
-
-let compile_typ (typ : Tdef.t) (entry : Tdef.ident) : Automata.t =
+let compile_typ (typ : DTD.t) (entry : Ident.t) : AutomT.t =
   let table = mkhsh typ in
 
-  let automata = Automata.empty () in
+  let automata = Tree_automata.empty () in
 
-  Automata.(extends automata (`States (State.Root entry)));
-
+  Tree_automata.(extends_states automata (None, entry));
   Hashtbl.iter
     (fun _ident values ->
       List.iter
         (fun (guard, regex) ->
           match guard with
-          | Tdef.Label l ->
-              Automata.extends automata (`Sigma l);
+          | Tdef.DTD.Label l ->
+              Tree_automata.extends_sigma automata l;
 
-              let sibling = comp regex table in
-              let child = Automata.State.Bottom in
+              let reg = Regautom.make_dfa regex in
+              let sibling = (reg, "state todo") in
+              let child = (reg, "state todo") in
+              let cur_state = (None, "state todo") in
 
+              (* let child = Tree_automata.State.Bottom in *)
               let trans =
-                Automata.(
-                  Transition.F (Alphabet.singleton l, State.Leaf, child, sibling))
+                AutomT.Transition.F
+                  (Alphabet.singleton l, cur_state, child, sibling)
               in
 
-              Automata.extends automata (`Trans trans)
+              Tree_automata.extends_delta automata trans
           | _ -> failwith "pas encore codé :("
           (* | Tdef.Neg ll ->
                  List.iter (fun e -> Automata.extends automata (`Sigma e)) ll;
