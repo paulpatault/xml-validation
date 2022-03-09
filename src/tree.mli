@@ -8,3 +8,4 @@ val is_empty : t -> node -> bool
 val label : t -> node -> label
 val root : t -> node
 val parse : string -> t
+val pp : Format.formatter -> t -> unit

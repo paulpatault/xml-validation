@@ -1,13 +1,11 @@
-(library
- (name lib)
- (flags
-  (:standard -w +a-4-32-33-37-42-70))
- (libraries xml-light))
-
-(menhir
- (flags (-v))
-  ; (:standard -v --explain))
- (modules parser))
-
 (ocamllex
  (modules lexer))
+
+(menhir
+ (modules parser)
+ (flags (-v)))
+
+(library
+ (flags :standard -w +a-4-32-33-37-42-70)
+ (name mlib)
+ (libraries xml-light))
