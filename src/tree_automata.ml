@@ -6,11 +6,11 @@ module Pprinter = struct
   let rec pp_alphabet fmt alpha =
     if not (Alphabet.is_empty alpha) then
       let al = Alphabet.choose alpha in
-      fprintf fmt "%s,%a" al pp_alphabet (Alphabet.remove al alpha)
+      let alpha = Alphabet.remove al alpha in
+      if Alphabet.is_empty alpha then fprintf fmt "%s" al
+      else fprintf fmt "%s,%a" al pp_alphabet alpha
 
-  let pp_state fmt state =
-    let _rautom, str = state in
-    fprintf fmt "%s" str
+  let pp_state fmt (_autom, state) = fprintf fmt "%s" state
 
   let rec pp_states fmt states =
     if not (States.is_empty states) then
@@ -21,16 +21,18 @@ module Pprinter = struct
     let open Transition in
     match trans with
     | CoF (alpha, state, s1, s2) | F (alpha, state, s1, s2) ->
-        fprintf fmt "[%a,%a -> %a,%a]" pp_alphabet alpha pp_state state pp_state
-          s1 pp_state s2
+        fprintf fmt "[{%a}, %a -> %a, %a]" pp_alphabet alpha pp_state state
+          pp_state s1 pp_state s2
 
   let rec pp_delta fmt delta =
     if not (Delta.is_empty delta) then
       let trans = Delta.choose delta in
-      fprintf fmt "%a,%a" pp_trans trans pp_delta (Delta.remove trans delta)
+      let delta = Delta.remove trans delta in
+      if Delta.is_empty delta then fprintf fmt "%a" pp_trans trans
+      else fprintf fmt "%a,%a" pp_trans trans pp_delta delta
 
   let pp_autom fmt (autom : t) =
-    fprintf fmt "states = {%a}@.delta={%a}@.final={%a}@.sigma={%a}@." pp_states
+    fprintf fmt "states = %a@.delta  = %a@.final  = %a@.sigma  = %a@." pp_states
       autom.states pp_delta autom.delta pp_states autom.final pp_alphabet
       autom.sigma
 end
