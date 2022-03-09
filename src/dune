@@ -1,12 +1,12 @@
-(executable
- (name validate)
+(library
+ (name lib)
  (flags
   (:standard -w +a-4-32-33-37-42-70))
  (libraries xml-light))
 
 (menhir
- (flags
-  (:standard -v --explain))
+ (flags (-v))
+  ; (:standard -v --explain))
  (modules parser))
 
 (ocamllex

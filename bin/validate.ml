@@ -1,3 +1,5 @@
+open Lib
+
 let main () =
   let type_file, xml_file, rac =
     match Sys.argv with
