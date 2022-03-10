@@ -1,6 +1,5 @@
 type label = string
 type t = Node of label * t * t | Leaf
-type node = t
 
 let rec bt = function
   | [] -> Leaf
@@ -23,13 +22,13 @@ let parse input =
 
 let root = function Leaf -> invalid_arg "tree.root" | _ as t -> t
 
-let first_child _ = function
+let first_child = function
   | Node (_, l, _) -> l
   | _ -> invalid_arg "tree.first_child"
 
-let next_sibling _ = function
+let next_sibling = function
   | Node (_, _, r) -> r
   | _ -> invalid_arg "tree.next_sibling"
 
-let label _ = function Node (lab, _, _) -> lab | _ -> invalid_arg "tree.label"
-let is_empty _ = function Leaf -> true | _ -> false
+let label = function Node (lab, _, _) -> lab | _ -> invalid_arg "tree.label"
+let is_empty = function Leaf -> true | _ -> false

@@ -2,7 +2,7 @@ open Mlib
 open Format
 open Utils
 
-let main () =
+let () =
   let type_file, xml_file, rac = parse_args () in
 
   let tree = Tree.parse xml_file in
@@ -20,5 +20,3 @@ let main () =
   match Tc.check automata tree rac with
   | Ok _ -> printf "cool ca marche"
   | Error _ -> failwith "triste"
-
-let () = main ()
