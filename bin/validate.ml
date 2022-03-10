@@ -1,21 +1,24 @@
 open Mlib
+open Format
+open Utils
 
 let main () =
-  let type_file, xml_file, _rac =
-    match Sys.argv with
-    | [| _; type_file; xml_file; rac |] -> (type_file, xml_file, rac)
-    | _ ->
-        Format.eprintf "Arguments requis\n%!";
-        exit 1
+  let type_file, xml_file, rac = parse_args () in
+
+  let tree = Tree.parse xml_file in
+
+  let automata =
+    open_in type_file
+    |> Lexing.from_channel
+    |> Parser.type_defs Lexer.token
+    |> Compiler.compile_typ
   in
-  let t = Tree.parse xml_file in
 
-  let tin = open_in type_file in
-  let tdefs = Parser.type_defs Lexer.token (Lexing.from_channel tin) in
+  print_tree tree;
+  print_autom automata;
 
-  let automata = Compiler.compile_typ tdefs in
-  let fmt = Format.std_formatter in
-
-  Format.fprintf fmt "%a@.%a" Tree.pp t Tree_automata.Pprinter.pp_autom automata
+  match Tc.check automata tree rac with
+  | Ok _ -> printf "cool ca marche"
+  | Error _ -> failwith "triste"
 
 let () = main ()

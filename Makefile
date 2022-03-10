@@ -2,7 +2,7 @@ all:
 	dune build
 
 run:
-	dune exec validate tests/ex.typ tests/1.xml x
+	dune exec bin/validate.exe tests/ex.typ tests/1.xml x
 
 clean:
 	dune clean
