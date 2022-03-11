@@ -1,0 +1,100 @@
+\ProvidesPackage{ppbase}[2022]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{ulem}\normalem
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[french]{babel}
+
+\RequirePackage{cmds}
+
+\RequirePackage{url}
+
+\RequirePackage{enumerate}
+
+\RequirePackage{amsfonts, amsthm, amsmath, amssymb}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newif\if@code \@codefalse
+\newif\if@figs \@figsfalse
+\newif\if@tikz \@tikzfalse
+\newif\if@href \@hreffalse
+
+\DeclareOption{tikz}{\@tikztrue}
+\DeclareOption{figs}{\@figstrue}
+\DeclareOption{code}{\@codetrue}
+\DeclareOption{href}{\@hreftrue}
+
+\DeclareOption*{}%% Ne rien faire quand une option est inconnue
+
+\ProcessOptions
+
+\if@figs
+    % \RequirePackage{pdfpages}
+    \RequirePackage{caption}
+    \RequirePackage{float}
+    \graphicspath{ {./img} }
+\fi
+
+\if@tikz
+    \RequirePackage{tikz}
+    \usetikzlibrary{decorations.text,calc,arrows.meta}
+    \usetikzlibrary{automata,positioning}% Set target color model to RGB
+    \RequirePackage{graphviz}
+\fi
+
+\if@code
+    \RequirePackage{algorithm}
+    % \RequirePackage{algorithmic}
+    % \RequirePackage{algpseudocode}
+    \RequirePackage{lst}
+\fi
+
+\if@href
+    \RequirePackage{hyperref}
+\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% check ::: https://en.m.wikibooks.org/wiki/LaTeX/Customizing_Page_Headers_and_Footers
+
+\usepackage{fancyhdr}
+\usepackage[a4paper, left=3.3cm, right=3.3cm, bottom=5cm]{geometry}
+
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
+% \renewcommand{\subsectionmark}[1]{\markright{\thesubsection\ #1}}
+% \renewcommand{\subsubsectionmark}[1]{\markright{\thesubsubsection\ #1}}
+
+\fancyhead[CO]{\textsc{\rightmark}}
+\fancyhead[CE]{\textsc{Paul Patault}}
+\fancyhead[LE,RO]{\thepage}
+
+\renewcommand{\footrulewidth}{0pt}
+\renewcommand{\headrulewidth}{0pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setlength{\headheight}{40pt}
+\addtolength{\topmargin}{-2pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\baselinestretch}{1.2}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newtheorem{theoreme}{Théorème}%[section]
+\newtheorem{definition}{Définition}%[section]
+\newtheorem{notation}{Notation}%[section]
+\newtheorem{corollaire}{Corollaire}%[theoreme]
+% \newtheorem{lemme}[theoreme]{Lemme}
+\newtheorem{lemme}{Lemme}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\endinput
