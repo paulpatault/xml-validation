@@ -1,5 +1,6 @@
 open Tdef
 
+(* utile pour debug *)
 let rec r2str r =
   let open DTD in
   let open Format in
@@ -10,6 +11,7 @@ let rec r2str r =
   | Star r -> sprintf "(%s)*" (r2str r)
   | Alt (r1, r2) -> sprintf "(%s)|(%s)" (r2str r1) (r2str r2)
 
+(* remplissage de la table de hashage des types *)
 let mkhsh (typ : DTD.t) =
   let h = Hashtbl.create 42 in
 
@@ -26,6 +28,7 @@ let mkhsh (typ : DTD.t) =
     typ;
   h
 
+(* compilation du fichier dtd vers un automate d'arbre *)
 let compile_typ (typ : DTD.t) : AutomT.t =
   let table = mkhsh typ in
 

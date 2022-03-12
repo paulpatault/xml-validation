@@ -1,11 +1,14 @@
+(* string pour les noms *)
 module Ident = struct
   type t = string
 
   let compare = compare
 end
 
+(* representation du Σ de l'automate *)
 module Alphabet = Set.Make (Ident)
 
+(* representation des types à la DTD *)
 module DTD = struct
   type regex =
     | Epsilon
@@ -19,6 +22,8 @@ module DTD = struct
   type t = def list
 end
 
+(* representation d'un automate "classique"
+   pour gerer les expressions regulieres *)
 module AutomS = struct
   module Cmap = Map.Make (Ident)
   module Smap = Map.Make (Alphabet)
@@ -28,7 +33,9 @@ module AutomS = struct
   type t = autom option
 end
 
+(* representation d'un automate d'arbre *)
 module AutomT = struct
+  (* les etats sont un automate et un string *)
   module State = struct
     type t = AutomS.t * string
 
@@ -37,6 +44,7 @@ module AutomT = struct
 
   module States = Set.Make (State)
 
+  (* definition d'une transition *)
   module Transition = struct
     type t =
       | F of Alphabet.t * State.t * State.t * State.t
@@ -47,6 +55,7 @@ module AutomT = struct
 
   module Delta = Set.Make (Transition)
 
+  (* n-uplet final *)
   type t = {
     mutable states : States.t;
     mutable delta : Delta.t;

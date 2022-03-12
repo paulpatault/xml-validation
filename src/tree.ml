@@ -1,16 +1,19 @@
 type label = string
 type t = Node of label * t * t | Leaf
 
-let rec bt = function
-  | [] -> Leaf
-  | Xml.Element (lab, _, child) :: sibling -> Node (lab, bt child, bt sibling)
-  | _ -> assert false
-
+(* pretty printer *)
 let rec pp fmt = function
   | Node (lab, l, r) -> Format.fprintf fmt "%s (%a, %a)" lab pp l pp r
   | Leaf -> ()
 
+(* parsing d'un fichier xml dans un arbre n-aire
+   et compilation de celui-ci dans un arbre binaire *)
 let parse input =
+  let rec bt = function
+    | [] -> Leaf
+    | Xml.Element (lab, _, child) :: sibling -> Node (lab, bt child, bt sibling)
+    | _ -> assert false
+  in
   let doc = Xml.parse_file input in
 
   let r =

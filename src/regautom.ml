@@ -1,6 +1,8 @@
 open Tdef
 open DTD
 
+(* ensemble de fonctions utile pour la génération d'un automate classique *)
+
 let rec null = function
   | Epsilon | Star _ -> true
   | Ident _ -> false
@@ -40,6 +42,7 @@ let next_state r q c =
     (fun c' q' -> if c' = c then Alphabet.union q' (follow c' r) else q')
     q Alphabet.empty
 
+    (* fonction de genration à partir d'une reg-expr *)
 let make_dfa r =
   let open AutomS in
   let r = Concat (r, Ident eof) in
