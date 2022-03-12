@@ -1,36 +1,28 @@
 open Tdef
 
-(* utile pour debug *)
-let rec r2str r =
-  let open DTD in
-  let open Format in
-  match r with
-  | Epsilon -> "eps"
-  | Ident x -> x
-  | Concat (r1, r2) -> sprintf "(%s)+(%s)" (r2str r1) (r2str r2)
-  | Star r -> sprintf "(%s)*" (r2str r)
-  | Alt (r1, r2) -> sprintf "(%s)|(%s)" (r2str r1) (r2str r2)
-
 (* remplissage de la table de hashage des types *)
-let mkhsh (typ : DTD.t) =
+let mkhsh ?(debug = false) (typ : DTD.t) =
   let h = Hashtbl.create 42 in
 
+  let fmt = Format.err_formatter in
+  if debug then Format.fprintf fmt "regexps::=@[<v>@,";
   List.iter
     (fun (ident, guard, regex) ->
       let lab = match guard with Tdef.DTD.Label l -> l | _ -> "empty" in
 
-      Format.eprintf "%s,%s,%s@." ident lab (r2str regex);
+      if debug then Utils.print_dtd_def fmt ident lab regex;
 
       let lst =
         match Hashtbl.find_opt h ident with None -> [] | Some e -> e
       in
       Hashtbl.add h ident ((guard, regex) :: lst))
     typ;
+  if debug then Format.fprintf fmt "@]@.";
   h
 
 (* compilation du fichier dtd vers un automate d'arbre *)
-let compile_typ (typ : DTD.t) : AutomT.t =
-  let table = mkhsh typ in
+let compile_typ ?(debug = false) (typ : DTD.t) : AutomT.t =
+  let table = mkhsh ~debug typ in
 
   let automata = Tree_automata.empty () in
 

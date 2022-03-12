@@ -11,12 +11,9 @@ let () =
     open_in type_file
     |> Lexing.from_channel
     |> Parser.type_defs Lexer.token
-    |> Compiler.compile_typ
+    |> Compiler.compile_typ ~debug:true
   in
 
-  print_tree tree;
-  print_autom automata;
-
-  match Tc.check automata tree rac with
+  match Tc.check ~debug:true automata tree rac with
   | Ok _ -> printf "cool ca marche"
   | Error _ -> failwith "triste"

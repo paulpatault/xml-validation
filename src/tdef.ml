@@ -20,6 +20,15 @@ module DTD = struct
   type guard = Label of Ident.t | Neg of Ident.t list | Star
   type def = Ident.t * guard * regex
   type t = def list
+
+  let rec pp r =
+    let open Format in
+    match r with
+    | Epsilon -> "eps"
+    | Ident x -> x
+    | Concat (r1, r2) -> sprintf "(%s)+(%s)" (pp r1) (pp r2)
+    | Star r -> sprintf "(%s)*" (pp r)
+    | Alt (r1, r2) -> sprintf "(%s)|(%s)" (pp r1) (pp r2)
 end
 
 (* representation d'un automate "classique"

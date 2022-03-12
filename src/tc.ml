@@ -11,5 +11,9 @@ let _check autom tree rac =
     let _trans = AutomT.Delta.filter f trans in
     failwith "todo"
 
-let check (autom : Tdef.AutomT.t) tree rac =
+let check ?(debug = false) (autom : Tdef.AutomT.t) tree rac =
+  if debug then (
+    Utils.print_tree tree;
+    Utils.print_autom autom);
+
   if _check autom tree (Alphabet.singleton rac) then Ok () else Error ()
