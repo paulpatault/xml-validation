@@ -15,6 +15,9 @@ run:
 clean:
 	$(CLEAN)
 
+cleanall: clean
+	rm -rf ./validate
+
 fmt:
 	$(BUILDER) $(FMT_FLAGS)
 
