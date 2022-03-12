@@ -1,11 +1,24 @@
+BUILDER     = dune build
+EXEC        = dune exec
+CLEAN       = dune clean
+FMT_FLAGS   = @fmt --auto-promote
+EXE.builded = ./_build/default/bin/validate.exe
+EXE.before  = ./bin/validate.exe
+EXE.loc     = ./validate
+
 all:
-	dune build
+	$(BUILDER)
 
 run:
-	dune exec bin/validate.exe tests/ex.typ tests/1.xml x
+	$(EXEC) $(EXE.before) tests/ex.dtd tests/1.xml hd
 
 clean:
-	dune clean
+	$(CLEAN)
 
 fmt:
-	dune build @fmt --auto-promote
+	$(BUILDER) $(FMT_FLAGS)
+
+install: all
+	cp -f $(EXE.builded) $(EXE.loc)
+
+.PHONY: all run clean fmt install
