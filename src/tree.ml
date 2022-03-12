@@ -3,7 +3,9 @@ type t = Node of label * t * t | Leaf
 
 (* pretty printer *)
 let rec pp fmt = function
-  | Node (lab, l, r) -> Format.fprintf fmt "%s (%a, %a)" lab pp l pp r
+  | Node (lab, l, r) ->
+      Format.fprintf fmt "%s (%a, %a)" lab pp l pp r
+      (* | Node (lab, l, r) -> Format.fprintf fmt "%s (@[<v>%a,@ %a@])@ " lab pp l pp r *)
   | Leaf -> ()
 
 (* parsing d'un fichier xml dans un arbre n-aire

@@ -9,7 +9,6 @@ let mkhsh ?(debug = false) (typ : DTD.t) =
   List.iter
     (fun (ident, guard, regex) ->
       let lab = match guard with Tdef.DTD.Label l -> l | _ -> "empty" in
-
       if debug then Utils.print_dtd_def fmt ident lab regex;
 
       let lst =
@@ -35,13 +34,13 @@ let compile_typ ?(debug = false) (typ : DTD.t) : AutomT.t =
               Tree_automata.extends_sigma automata l;
 
               let dfa = Regautom.make_dfa regex in
-              let sibling = (dfa, "q_" ^ l) in
-              let child = (dfa, "q_" ^ l) in
-              let cur_state = (dfa, "q_" ^ l) in
+              let sibling = (dfa, "q_from_" ^ ident) in
+              let child = (dfa, "q_from_" ^ ident) in
+              let cur_state = (dfa, "q_" ^ ident) in
 
               let trans =
                 AutomT.Transition.F
-                  (Alphabet.singleton ident, cur_state, child, sibling)
+                  (Alphabet.singleton l, cur_state, child, sibling)
               in
 
               Tree_automata.extends_delta automata trans

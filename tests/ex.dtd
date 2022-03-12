@@ -1,4 +1,4 @@
-type hd = HD[ p* ]
+type hd = H[ p* ]
 type p  = P[ b+c* ]
 type b  = B[]
 type c  = C[]

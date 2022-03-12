@@ -21,20 +21,22 @@ module Pprinter = struct
     let open Transition in
     match trans with
     | CoF (alpha, state, s1, s2) | F (alpha, state, s1, s2) ->
-        fprintf fmt "[{%a}, %a -> %a, %a]" pp_alphabet alpha pp_state state
+        fprintf fmt "{%a}, %a -> %a, %a" pp_alphabet alpha pp_state state
           pp_state s1 pp_state s2
 
   let rec pp_delta fmt delta =
     if not (Delta.is_empty delta) then
       let trans = Delta.choose delta in
       let delta = Delta.remove trans delta in
-      if Delta.is_empty delta then fprintf fmt "%a" pp_trans trans
-      else fprintf fmt "%a,%a" pp_trans trans pp_delta delta
+      if Delta.is_empty delta then fprintf fmt "%a@ " pp_trans trans
+      else fprintf fmt "%a,@ %a" pp_trans trans pp_delta delta
 
   let pp_autom fmt (autom : t) =
-    fprintf fmt "states = %a@.delta  = %a@.final  = %a@.sigma  = %a@." pp_states
-      autom.states pp_delta autom.delta pp_states autom.final pp_alphabet
-      autom.sigma
+    fprintf fmt
+      "states = @[<v>%a@]@ delta  = @[<v>%a@]@ final  = @[<v>%a@]@ sigma  = \
+       @[<v>%a@]@ "
+      pp_states autom.states pp_delta autom.delta pp_states autom.final
+      pp_alphabet autom.sigma
 end
 
 let mk_automata ?states ?delta ?final ?sigma () =
