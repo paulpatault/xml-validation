@@ -1,10 +1,24 @@
 open Tdef
 
+let rec r2str r =
+  let open DTD in
+  let open Format in
+  match r with
+  | Epsilon -> "eps"
+  | Ident x -> x
+  | Concat (r1, r2) -> sprintf "(%s)+(%s)" (r2str r1) (r2str r2)
+  | Star r -> sprintf "(%s)*" (r2str r)
+  | Alt (r1, r2) -> sprintf "(%s)|(%s)" (r2str r1) (r2str r2)
+
 let mkhsh (typ : DTD.t) =
   let h = Hashtbl.create 42 in
 
   List.iter
     (fun (ident, guard, regex) ->
+      let lab = match guard with Tdef.DTD.Label l -> l | _ -> "empty" in
+
+      Format.eprintf "%s,%s,%s@." ident lab (r2str regex);
+
       let lst =
         match Hashtbl.find_opt h ident with None -> [] | Some e -> e
       in
@@ -26,13 +40,13 @@ let compile_typ (typ : DTD.t) : AutomT.t =
               Tree_automata.extends_sigma automata l;
 
               let dfa = Regautom.make_dfa regex in
-              let sibling = (dfa, ident ^ l) in
-              let child = (dfa, "c: " ^ ident ^ l) in
-              let cur_state = (dfa, ident ^ l) in
+              let sibling = (dfa, "q_" ^ l) in
+              let child = (dfa, "q_" ^ l) in
+              let cur_state = (dfa, "q_" ^ l) in
 
               let trans =
                 AutomT.Transition.F
-                  (Alphabet.singleton l, cur_state, child, sibling)
+                  (Alphabet.singleton ident, cur_state, child, sibling)
               in
 
               Tree_automata.extends_delta automata trans

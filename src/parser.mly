@@ -2,23 +2,39 @@
   open Tdef
 %}
 
-%token ALT
-%token STAR
-%token QUESTION
-%token LB RB
-%token LP RP
-%token <string> IDENT
-%token TYPE
-%token EQUAL
+%token ALT                "|"
 %token EOF
+%token EQUAL              "="
+%token <string> IDENT     "ident"
+%token LB                 "["
+%token LP                 "("
+%token PLUS               "+"
+%token QUESTION           "?"
+%token RB                 "]"
+%token RP                 ")"
+%token STAR               "*"
+%token TYPE               "type"
+
+%left PLUS
+%left ALT
+%left QUESTION
+%left STAR
+
+/* donc par exemple:
+    [ A+B|C?+D* ]  =  [ (A + (B|C?)) + (D*) ]
+*/
+
+%type <DTD.t>     type_defs
+%type <DTD.def>   type_def
+%type <DTD.regex> regex
+%type <DTD.guard> guard
 
 %start type_defs
-%type <DTD.t> type_defs
 
 %%
 
 type_defs:
-| l = list (type_def) EOF { l }
+| l = nonempty_list (type_def) EOF { l }
 ;
 
 type_def:
@@ -26,13 +42,17 @@ type_def:
 ;
 
 regex: { DTD.Epsilon }
+| LP regex RP
+  { $2 }
+| regex PLUS regex
+  { DTD.Concat($1,$3) }
 | IDENT
   { DTD.Ident $1 }
 | regex QUESTION
   { DTD.Alt (DTD.Epsilon, $1) }
 | regex STAR
   { DTD.Star $1 }
-| LP r1=regex RP ALT LP r2=regex RP
+| r1=regex ALT r2=regex
   { DTD.Alt (r1, r2) }
 ;
 
@@ -41,5 +61,4 @@ guard:
   { DTD.Star }
 | IDENT
   { DTD.Label $1 }
-/* à compléter */
 ;

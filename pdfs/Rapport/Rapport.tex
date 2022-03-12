@@ -4,8 +4,8 @@
 \author{Paul Patault}
 \date{Mars 2022}
 
-\documentclass[twoside,11pt]{article}
-\usepackage[code]{ppbase}
+\documentclass[twoside,12pt]{article}
+\usepackage[code, figs]{ppbase}
 
 \begin{document}
 
@@ -24,8 +24,8 @@
 \end{center}
 
 \begin{abstract}
-    Projet du cours Automates et applications. Utilisation de la structure de
-    donnée d'automates d'arbres pour vérifier la bonne formation de fichier type
+    Projet du cours \textit{Automates et Applications}. Utilisation de la structure
+    de donnée d'automates d'arbres pour vérifier la bonne formation de fichier type
     XML. Ces automates d'arbres seront générés automatiquement à partir d'un fichier
     \textit{à la} DTD donné en entrée du programme. Celui-ci sera donc parsé puis
     compilé dans notre type.
@@ -50,7 +50,6 @@ Un run est dit acceptant si et seulement si $r (\epsilon) \in I$.
 
 \subsection{Question}
 
-\begin{figure}[H]
   \begin{minted}[baselinestretch=1.2,fontsize=\small, escapeinside=\/, mathescape=true]{ocaml}
     let rec validate_td a t p q =
         if label (t p) = '#' then
@@ -64,7 +63,6 @@ Un run est dit acceptant si et seulement si $r (\epsilon) \in I$.
                  validate_td a t (p@[next_sibling (t p)]) q')
             ) false l
    \end{minted}
-\end{figure}
 
 \subsection{Question}
 
@@ -79,8 +77,6 @@ nous fait prendre au pire $|\ocaml{a}|$ fois chaque arête de l'arbre \ocaml{t}.
 \section{Validation bottom-up}
 
 \subsection{Question}
-        \bigskip
-\begin{figure}[H]
   \begin{minted}[baselinestretch=1.2,fontsize=\small, escapeinside=\/, mathescape=true]{ocaml}
     let rec validate_bu a t p =
         let lab = label (t p) in
@@ -97,13 +93,11 @@ nous fait prendre au pire $|\ocaml{a}|$ fois chaque arête de l'arbre \ocaml{t}.
             ) left) right
             res
    \end{minted}
-\end{figure}
 
 
 \subsection{Question}
 
 La complexité de l'expression (\ocaml{validate_bu a t eps}) $\cap\ I$ est $O(|\ocaml{t}|)$.
-
 
 \subsection{Question} TODO
 
@@ -118,7 +112,6 @@ sur l'isomorphisme de ces deux structures présenté en fin de cours 3. Ainsi
 les fils directs de chaque n\oe{}ud deviennent les fils droits du fils gauche
 de ce n\oe{}ud et récursivement.
 
-\begin{figure}[H]
 \begin{minted}[baselinestretch=1.2,fontsize=\small, escapeinside=\/, mathescape=true]{ocaml}
         let n2bin input_n_tree =
             let rec aux = function
@@ -128,7 +121,6 @@ de ce n\oe{}ud et récursivement.
             match input_n_tree with
             | rac, childs -> Node (rac, aux childs, Leaf)
 \end{minted}
-\end{figure}
 
 
 \subsection{Question}

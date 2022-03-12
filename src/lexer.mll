@@ -45,6 +45,8 @@ rule token = parse
     { STAR }
   | "|"
     { ALT }
+  | "+"
+    { PLUS }
   | "?"
     { QUESTION }
   | "="

@@ -1,12 +1,15 @@
 open Tdef
 
-let rec _check autom tree rac =
-  if Tree.is_empty tree then true else plonge autom tree rac
+let _check autom tree rac =
+  if Tree.is_empty tree then true
+  else
+    let trans = AutomT.(autom.delta) in
+    let f = function
+      | AutomT.Transition.F (x, _, _, _) when x = rac -> true
+      | _ -> false
+    in
+    let _trans = AutomT.Delta.filter f trans in
+    failwith "todo"
 
-and plonge (autom: AutomT.t) _tree _rac =
-  let trans = AutomT.(autom.delta) in
-  let f = failwith "not implemented" in
-  let _trans = AutomT.Delta.filter f trans in
-  failwith "todo"
-
-let check (autom: Tdef.AutomT.t) tree rac = if _check autom tree rac then Ok () else Error ()
+let check (autom : Tdef.AutomT.t) tree rac =
+  if _check autom tree (Alphabet.singleton rac) then Ok () else Error ()
