@@ -1,8 +1,0 @@
-\contentsline {section}{\numberline {1}Introduction}{1}{}%
-\babel@toc {french}{}
-\contentsline {subsection}{\numberline {1.1}Définitions}{2}{}%
-\contentsline {section}{\numberline {2}Reculer pour mieux sauter}{2}{}%
-\contentsline {section}{\numberline {3}Théorème de Kleene}{3}{}%
-\contentsline {paragraph}{Combinateurs.}{5}{}%
-\contentsline {section}{\numberline {4}Applications}{6}{}%
-\contentsline {subsection}{\numberline {4.1}Quines}{6}{}%
