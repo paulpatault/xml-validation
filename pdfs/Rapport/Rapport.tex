@@ -34,8 +34,69 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Validation des documents}
-Section sans questions.
-Simple présentation du sujet, introduction des définitions et du travail attendu.
+\textit{Section sans questions. Nous profitons cependant de cet espace pour faire quelques
+remarques.}
+
+\subsection{Syntaxe}
+
+\subsubsection{Fichiers DTD}
+
+L'extension \texttt{dtd} est utilisé comme abus de langage mais clarifie les choses.
+La syntaxe est simple, un type commence par le mot clé \og\texttt{type}\fg{} suivi
+par le nom donné à ce dernier, ensuite un signe \og\texttt{=}\fg{} puis le nom de
+la balise et enfin entre \og\texttt{[]}\fg{} se trouve une expression régulière
+(où \og\texttt{*}\fg{} est le symbole classique, \og\texttt{|}\fg{} indique
+l'alternative et \og\texttt{+}\fg{} la concaténation).
+Voici un fichier \texttt{.dtd} qui sera accepté par le parser:
+  \begin{minted}[baselinestretch=1.2,fontsize=\small, escapeinside=\/, mathescape=true]{xml}
+            type t  = HD[ x* ]
+            type x  = P[ y+z* ]
+            type y  = B[ (z+z)|x* ]
+            type z  = C[]
+  \end{minted}
+
+\subsubsection{Fichiers XML}
+
+Nous utilisons la bibliothèque \texttt{Xml-light} pour le parsing.
+Voici un fichier \texttt{.xml} d'exemple qui sera accepté par le parser (remarque :
+ce fichier est bien typé par rapport au fichier \texttt{.dtd} proposé en exemple):
+  \begin{minted}[baselinestretch=1.2,fontsize=\small, escapeinside=\/, mathescape=true]{xml}
+  <HD>
+      <P>
+         <B>
+            <C></C>
+            <C></C>
+         </B>
+      </P>
+      <P>
+         <B></B>
+         <C></C>
+         <C></C>
+      </P>
+  </HD>
+  \end{minted}
+
+\subsection{À propos du sujet, et de l'implémentation}
+
+Je n'ai pas réussi à faire le sujet complet.
+Le pseudo-code de la section 4 n'est pas vraiment relevant, et
+le code réel associé ne mène pas un résultat concluant.
+Je n'ai pas trouvé comment concevoir l'algorithme de
+compilation d'un fichier de type \texttt{DTD} vers un automate
+d'arbre binaire \footnotemark. Le point qui m'a en particulier posé
+problème est la compilation des transitions. En effet, je ne trouve
+pas de façon générale pour réaliser cette transformation. Je crois
+que mon problème est précisément situé au niveau des états à nommer
+avant la vérification de cohérence. Ayant un code pour gérer les
+expressions régulières, il faudrait \og simplement \fg{} transporter
+en plus l'état courant de l'automate classique en plus, cependant
+il est impossible d'encoder cela en avance dans les transitions.
+Je suis probablement passé à côté de la solution, en m'entetant sur
+cette mauvaise piste.
+
+\footnotetext{Je précise bien binaire car il s'agit selon moi (je peux me tromper)
+    d'une difficulté supplémentaire imposée dans ce projet, je pense qu'avec une
+    structure d'arbre classique la compilation des transitions aurait été plus simple.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -126,5 +187,6 @@ de ce n\oe{}ud et récursivement.
 \subsection{Question}
 L'automate d'arbre produit correspondant au type donné en entrée est de taille ...TODO...
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \end{document}
