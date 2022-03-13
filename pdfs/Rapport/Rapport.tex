@@ -111,19 +111,26 @@ Un run est dit acceptant si et seulement si $r (\epsilon) \in I$.
 
 \subsection{Question}
 
-  \begin{minted}[baselinestretch=1.2,fontsize=\small, escapeinside=\/, mathescape=true]{ocaml}
+\begin{algorithm}
+    \bigskip
+  \begin{minted}[baselinestretch=1.2,fontsize=\small]{ocaml}
     let rec validate_td a t p q =
-        if label (t p) = '#' then
-            true
-        else
-            let transition = label (t p), q in
-            let l = List.filter ((=) transition) a.delta in (* modifier ici *)
-            List.fold (fun acc q' ->
-                acc ||
-                (validate_td a t (p@[first_child (t p)]) q' &&
-                 validate_td a t (p@[next_sibling (t p)]) q')
-            ) false l
+      if label (t p) = '#' then is_final q
+      else
+        let l =
+          List.filter
+            (fun (l, q', _, _) -> l = label (t p) && q = q)
+            a.delta
+        in
+        List.fold
+          (fun acc q' ->
+            acc
+            || validate_td a t (p @ [ first_child (t p) ]) q'
+               && validate_td a t (p @ [ next_sibling (t p) ]) q')
+          false l
    \end{minted}
+   \caption{\small Pseudo-code \textit{à la} Caml pour la fonction \texttt{validate\_td}}
+\end{algorithm}
 
 \subsection{Question}
 
@@ -138,22 +145,32 @@ nous fait prendre au pire $|\ocaml{a}|$ fois chaque arête de l'arbre \ocaml{t}.
 \section{Validation bottom-up}
 
 \subsection{Question}
-  \begin{minted}[baselinestretch=1.2,fontsize=\small, escapeinside=\/, mathescape=true]{ocaml}
+\begin{algorithm}
+    \bigskip
+  \begin{minted}[baselinestretch=1.2,fontsize=\small]{ocaml}
     let rec validate_bu a t p =
-        let lab = label (t p) in
-        if lab = '#' then
-            List.filter ((=) ('#',[],[]) a.trans in
-        else
-            let left = validate_bu a t (p@[first_child (t p)]) in
-            let right = validate_bu a t (p@[next_sibling (t p)]) in
-            let res = ref [] in
-            List.iter (fun r -> List.iter (fun l ->
-                let trans = lab, l, r in
-                let possible_states = List.filter ((=) trans) a.trans in
-                res <- possible_states :: !res;
-            ) left) right
-            res
+      let lab = label (t p) in
+      if lab = '#' then
+        List.filter
+          (fun (lab', _, l', r') -> '#',[],[] = lab',l',r' )
+          a.delta
+    else
+      let left = validate_bu a t (p@[first_child (t p)]) in
+      let right = validate_bu a t (p@[next_sibling (t p)]) in
+      let res = ref [] in
+      List.iter (fun r -> List.iter (fun l ->
+          let trans = lab, l, r in
+          let possible_states =
+            List.filter
+              (fun (lab', _, l', r') -> lab,l,r = lab',l',r' )
+              a.delta
+          in
+          res <- possible_states :: !res;
+        ) left) right
+        res
    \end{minted}
+   \caption{\small Pseudo-code \textit{à la} Caml pour la fonction \texttt{validate\_bu}}
+\end{algorithm}
 
 
 \subsection{Question}
@@ -173,15 +190,20 @@ sur l'isomorphisme de ces deux structures présenté en fin de cours 3. Ainsi
 les fils directs de chaque n\oe{}ud deviennent les fils droits du fils gauche
 de ce n\oe{}ud et récursivement.
 
+\begin{algorithm}
+    \bigskip
 \begin{minted}[baselinestretch=1.2,fontsize=\small, escapeinside=\/, mathescape=true]{ocaml}
-        let n2bin input_n_tree =
-            let rec aux = function
-              | [] -> Leaf
-              | node :: sibling -> Node (aux node, aux sibling)
-            in
-            match input_n_tree with
-            | rac, childs -> Node (rac, aux childs, Leaf)
+    let n2bin input_n_tree =
+      let rec aux = function
+        | [] -> Leaf
+        | node :: sibling -> Node (aux node, aux sibling)
+      in
+      match input_n_tree with
+      | rac, childs -> Node (rac, aux childs, Leaf)
 \end{minted}
+   \caption{\small Pseudo-code \textit{à la} Caml pour la fonction de compilation des arbres
+   n-aires vers des arbres binaires}
+\end{algorithm}
 
 
 \subsection{Question}
