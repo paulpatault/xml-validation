@@ -14,6 +14,5 @@ let () =
     |> Compiler.compile_typ ~debug:true
   in
 
-  match Tc.check ~debug:true automata tree rac with
-  | Ok _ -> printf "cool ca marche"
-  | Error _ -> failwith "triste"
+  if Tc.check ~debug:true automata tree rac then printf "cool ca marche"
+  else failwith "triste"

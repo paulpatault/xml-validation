@@ -34,9 +34,9 @@ let compile_typ ?(debug = false) (typ : DTD.t) : AutomT.t =
               Tree_automata.extends_sigma automata l;
 
               let dfa = Regautom.make_dfa regex in
-              let sibling = (dfa, "q_from_" ^ ident) in
-              let child = (dfa, "q_from_" ^ ident) in
-              let cur_state = (dfa, "q_" ^ ident) in
+              let sibling = (dfa, ident) in
+              let child = (dfa, ident) in
+              let cur_state = (dfa, ident) in
 
               let trans =
                 AutomT.Transition.F
