@@ -11,7 +11,7 @@ let () =
     open_in type_file
     |> Lexing.from_channel
     |> Parser.type_defs Lexer.token
-    |> Compiler.compile_typ ~debug:true
+    |> Compiler.compile_typ ~debug:true rac
   in
 
   if Tc.check ~debug:true automata tree rac then printf "cool ca marche"

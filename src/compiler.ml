@@ -1,51 +1,56 @@
 open Tdef
 
 (* remplissage de la table de hashage des types *)
-let mkhsh ?(debug = false) (typ : DTD.t) =
-  let h = Hashtbl.create 42 in
+let mk_tbl ?(debug = false) (typ : DTD.t) =
+  let tbl = Hashtbl.create 42 in
 
   let fmt = Format.err_formatter in
-  if debug then Format.fprintf fmt "regexps::=@[<v>@,";
+  (* if debug then Format.fprintf fmt "regexps::=@[<v>@,"; *)
   List.iter
     (fun (ident, guard, regex) ->
-      let lab = match guard with Tdef.DTD.Label l -> l | _ -> "empty" in
+      let lab = match guard with Tdef.DTD.Label [ l ] -> l | _ -> "empty" in
       if debug then Utils.print_dtd_def fmt ident lab regex;
 
-      let lst =
-        match Hashtbl.find_opt h ident with None -> [] | Some e -> e
+      let guard', regex' =
+        match Hashtbl.find_opt tbl ident with
+        | None -> (guard, regex)
+        | Some (guard', regex') -> (
+            match (guard, guard') with
+            | Tdef.DTD.Label l, Tdef.DTD.Label l' ->
+                (Tdef.DTD.Label (l @ l'), Tdef.DTD.Alt (regex, regex'))
+            | _ -> failwith "todo")
       in
-      Hashtbl.add h ident ((guard, regex) :: lst))
+
+      Hashtbl.add tbl ident (guard', regex'))
     typ;
   if debug then Format.fprintf fmt "@]@.";
-  h
+  tbl
 
 (* compilation du fichier dtd vers un automate d'arbre *)
-let compile_typ ?(debug = false) (typ : DTD.t) : AutomT.t =
-  let table = mkhsh ~debug typ in
+let compile_typ ?(debug = false) (rac : string) (typ : DTD.t) : AutomT.t =
+  let table = mk_tbl ~debug typ in
 
   let automata = Tree_automata.empty () in
 
   Hashtbl.iter
-    (fun ident values ->
-      List.iter
-        (fun (guard, regex) ->
-          match guard with
-          | Tdef.DTD.Label l ->
-              Tree_automata.extends_sigma automata l;
+    (fun ident (guard, regex) ->
+      match guard with
+      | Tdef.DTD.Label [ l ] ->
+          Tree_automata.extends_sigma automata l;
 
-              let dfa = Regautom.make_dfa regex in
-              let sibling = (dfa, ident) in
-              let child = (dfa, ident) in
-              let cur_state = (dfa, ident) in
+          let dfa = Regautom.make_dfa regex in
 
-              let trans =
-                AutomT.Transition.F
-                  (Alphabet.singleton l, cur_state, child, sibling)
-              in
+          let sibling = if ident = rac then None else Some ident in
+          let child = if regex = Tdef.DTD.Epsilon then None else Some ident in
 
-              Tree_automata.extends_delta automata trans
-          | _ -> failwith "TODO")
-        values)
+          let cur = Some ident in
+
+          let trans =
+            AutomT.Transition.F (Alphabet.singleton l, cur, child, sibling)
+          in
+
+          Tree_automata.extends_delta automata trans
+      | _ -> failwith "TODO")
     table;
 
   automata

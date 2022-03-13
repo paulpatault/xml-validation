@@ -17,7 +17,7 @@ module DTD = struct
     | Star of regex
     | Alt of regex * regex
 
-  type guard = Label of Ident.t | Neg of Ident.t list | Star
+  type guard = Label of Ident.t list | Neg of Ident.t list | Star
   type def = Ident.t * guard * regex
   type t = def list
 
@@ -46,7 +46,7 @@ end
 module AutomT = struct
   (* les etats sont un automate et un string *)
   module State = struct
-    type t = AutomS.t * string
+    type t = string option
 
     let compare = compare
   end

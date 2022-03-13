@@ -35,8 +35,6 @@ let rec follow c = function
       let s = follow c r in
       if Alphabet.mem c (last r) then Alphabet.union s (first r) else s
 
-let eof = "#"
-
 let next_state r q c =
   Alphabet.fold
     (fun c' q' -> if c' = c then Alphabet.union q' (follow c' r) else q')
@@ -45,7 +43,6 @@ let next_state r q c =
 (* fonction de genration à partir d'une reg-expr *)
 let make_dfa r =
   let open AutomS in
-  let r = Concat (r, Ident eof) in
   let trans = ref Smap.empty in
   let rec transitions q =
     if not (Smap.mem q !trans) then (
@@ -62,5 +59,3 @@ let make_dfa r =
   let q0 = first r in
   transitions q0;
   Some { start = q0; trans = !trans }
-
-let accepting q = Alphabet.mem eof q

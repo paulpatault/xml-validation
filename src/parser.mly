@@ -60,5 +60,5 @@ guard:
 | STAR
   { DTD.Star }
 | IDENT
-  { DTD.Label $1 }
+  { DTD.Label [$1] }
 ;

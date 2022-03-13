@@ -10,7 +10,9 @@ module Pprinter = struct
       if Alphabet.is_empty alpha then fprintf fmt "%s" al
       else fprintf fmt "%s,%a" al pp_alphabet alpha
 
-  let pp_state fmt (_autom, state) = fprintf fmt "%s" state
+  let pp_state fmt = function
+    | Some state -> fprintf fmt "%s" state
+    | _ -> fprintf fmt "#"
 
   let rec pp_states fmt states =
     if not (States.is_empty states) then
