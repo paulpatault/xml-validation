@@ -10,7 +10,10 @@ all:
 	$(BUILDER)
 
 run:
-	$(EXEC) $(EXE.before) tests/ex.dtd tests/1.xml hd
+	$(EXEC) $(EXE.before) tests/1.dtd tests/1.xml a
+
+runv:
+	$(EXEC) $(EXE.before) tests/1.dtd tests/1.xml a 1
 
 clean:
 	$(CLEAN)

@@ -12,7 +12,7 @@ module Pprinter = struct
 
   let pp_state fmt = function
     | Some state -> fprintf fmt "%s" state
-    | _ -> fprintf fmt "#"
+    | None -> fprintf fmt "#"
 
   let rec pp_states fmt states =
     if not (States.is_empty states) then
@@ -62,6 +62,9 @@ let extends_delta automata t =
   match t with
   | Transition.F (_, s1, s2, s3) | Transition.CoF (_, s1, s2, s3) ->
       List.iter (extends_states automata) [ s1; s2; s3 ];
+      Format.eprintf "@[<v>@.";
+      List.iter (Format.eprintf "(%a)@;" Pprinter.pp_state) [ s1; s2; s3 ];
+      Format.eprintf "@]@.";
       automata.delta <- Delta.add t automata.delta
 
 let extends automata = function

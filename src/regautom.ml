@@ -43,6 +43,7 @@ let next_state r q c =
 (* fonction de genration à partir d'une reg-expr *)
 let make_dfa r =
   let open AutomS in
+  let r = Concat (r, Ident "#") in
   let trans = ref Smap.empty in
   let rec transitions q =
     if not (Smap.mem q !trans) then (

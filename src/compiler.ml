@@ -5,12 +5,11 @@ open Utils
 let mk_tbl ?(debug = false) (typ : DTD.t) =
   let tbl = Hashtbl.create 42 in
 
-  let fmt = Format.err_formatter in
   (* if debug then Format.fprintf fmt "regexps::=@[<v>@,"; *)
   List.iter
     (fun (ident, guard, regex) ->
       let lab = match guard with DTD.Label [ l ] -> l | _ -> "empty" in
-      if debug then print_dtd_def fmt ident lab regex;
+      if debug then print_dtd_def Format.err_formatter ident lab regex;
 
       let guard', regex' =
         match Hashtbl.find_opt tbl ident with
@@ -24,7 +23,7 @@ let mk_tbl ?(debug = false) (typ : DTD.t) =
 
       Hashtbl.add tbl ident (guard', regex'))
     typ;
-  if debug then Format.fprintf fmt "@]@.";
+  if debug then Format.eprintf "@]@.";
   tbl
 
 (* compilation du fichier dtd vers un automate d'arbre *)
@@ -37,8 +36,10 @@ let compile_typ ?(debug = false) (rac : string) (typ : DTD.t) :
 
   Hashtbl.iter
     (fun ident (guard, regex) ->
+      Format.eprintf "NONONONON::::%s@." ident;
       match guard with
       | Tdef.DTD.Label [ l ] -> (
+          Format.eprintf "\t::::%s@." l;
           if ident = rac then rac_res := l;
           Tree_automata.extends_sigma automata l;
 
@@ -56,9 +57,11 @@ let compile_typ ?(debug = false) (rac : string) (typ : DTD.t) :
 
               AutomS.Smap.iter
                 (fun state nexts ->
+                  Format.eprintf "\t::::--iter@.";
                   (* iteration sur les transitions *)
                   AutomS.Cmap.iter
                     (fun _ value ->
+                      Format.eprintf "\t::::----subiter@.";
                       let state =
                         mk_state_str Tree_automata.Pprinter.pp_alphabet state
                       in
@@ -82,7 +85,7 @@ let compile_typ ?(debug = false) (rac : string) (typ : DTD.t) :
                       Tree_automata.extends_delta automata trans)
                     nexts)
                 AutomS.(dfa.trans)
-          | None -> ())
+          | None -> Format.eprintf "compiler.match : NONE...")
       | _ -> failwith "TODO")
     table;
 

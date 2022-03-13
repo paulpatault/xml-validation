@@ -25,7 +25,7 @@ module DTD = struct
     let open Format in
     match r with
     | Epsilon -> "eps"
-    | Ident x -> x
+    | Ident x -> sprintf "ident(%s)" x
     | Concat (r1, r2) -> sprintf "(%s)+(%s)" (pp r1) (pp r2)
     | Star r -> sprintf "(%s)*" (pp r)
     | Alt (r1, r2) -> sprintf "(%s)|(%s)" (pp r1) (pp r2)
