@@ -26,7 +26,7 @@ module Pprinter = struct
         fprintf fmt "CoF{%a}, %a -> %a, %a" pp_alphabet alpha pp_state state
           pp_state s1 pp_state s2
     | F (alpha, state, s1, s2) ->
-        fprintf fmt "F{%a}, %a -> %a, %a" pp_alphabet alpha pp_state state
+        fprintf fmt "F{%a}, %a -> (%a), (%a)" pp_alphabet alpha pp_state state
           pp_state s1 pp_state s2
 
   let rec pp_delta fmt delta =

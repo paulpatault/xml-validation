@@ -34,11 +34,11 @@ end
 (* representation d'un automate "classique"
    pour gerer les expressions regulieres *)
 module AutomS = struct
-  module Cmap = Map.Make (Ident)
-  module Smap = Map.Make (Alphabet)
+  module TransMap = Map.Make (Ident)
+  module DeltaMap = Map.Make (Alphabet)
 
   type state = Alphabet.t
-  type autom = { start : state; trans : state Cmap.t Smap.t }
+  type autom = { start : state; trans : state TransMap.t DeltaMap.t }
   type t = autom option
 end
 

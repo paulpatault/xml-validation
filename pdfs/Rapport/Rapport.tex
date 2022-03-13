@@ -79,9 +79,9 @@ ce fichier est bien typé par rapport au fichier \texttt{.dtd} proposé en exemp
 \subsection{À propos du sujet, et de l'implémentation}
 
 Je n'ai pas réussi à faire le sujet complet.
-Le pseudo-code de la section 4 n'est pas vraiment relevant, et
-le code réel associé ne mène pas un résultat concluant.
-Je n'ai pas trouvé comment concevoir l'algorithme de
+Le pseudo-code de la section 4 n'est pas exact, et
+le code réel associé ne mène pas encore à un résultat concluant.
+Je n'ai pas complètement trouvé comment concevoir l'algorithme de
 compilation d'un fichier de type \texttt{DTD} vers un automate
 d'arbre binaire \footnotemark. Le point qui m'a en particulier posé
 problème est la compilation des transitions. En effet, je ne trouve
@@ -89,10 +89,7 @@ pas de façon générale pour réaliser cette transformation. Je crois
 que mon problème est précisément situé au niveau des états à nommer
 avant la vérification de cohérence. Ayant un code pour gérer les
 expressions régulières, il faudrait \og simplement \fg{} transporter
-en plus l'état courant de l'automate classique en plus, cependant
-il est impossible d'encoder cela en avance dans les transitions.
-Je suis probablement passé à côté de la solution, en m'entetant sur
-cette mauvaise piste.
+en plus l'état courant de l'automate classique en plus.
 
 \footnotetext{Je précise bien binaire car il s'agit selon moi (je peux me tromper)
     d'une difficulté supplémentaire imposée dans ce projet, je pense qu'avec une
@@ -205,9 +202,41 @@ de ce n\oe{}ud et récursivement.
    n-aires vers des arbres binaires}
 \end{algorithm}
 
+Pour la compilation des expressions régulières, nous utilisons la construction
+de Berry-Sethi \footnote{Elle semble être la même que celle de Glushkov)}.
+Celle-ci est efficace, et n'a pas le défaut de Thompson en générant des transitions
+epsilon qu'il aurait par la suite fallut supprimer.
+Le code se trouve dans le fichier \texttt{src/regautomata.ml} et parle de lui-même, nous n'allons
+donc pas le présenter plus en détails.
+
+Enfin pour la compilation des types \textit{à la} DTD en eux même,
+la solution n'est pas encore très claire. Arrivé seul à la même idée
+que celle proposé dans le message sur e-campus
+\footnote{Message que je n'ai pu découvrir que ce dimanche, n'ayant
+pas eu de notification relative aux messages, probablement dû à leur
+caractère \og semi-privés \fg{} sur e-campus.},
+l'avancement s'est fait à tâtons et aucune conclusion n'est envisageable dans l'immédiat.
+
+L'implémentation est donc une tentative d'application d'une idée vague relativement similaire à
+celle discutée. La fonction de compilation d'un fichier de type est située dans
+\texttt{src/compiler.ml} et il s'agit de la fonction \texttt{compile\_typ}.
+L'idée est dans un premier temps de remplir un table de hashage contenant les types, pour
+regrouper les possibles multiples définitions d'un même type. Ensuite, en itérant sur chacun
+de ces derniers, l'automate de mot correspondant à l'expression régulière est fabriqué, et
+nous tentons d'encoder ces états dans les transitions de notre automate d'arbre en construction.
+Cependant, il doit y avoir une erreur à ce niveau dans le code, mais la localisation précise
+ce bogue pose encore problème.
+
+
 
 \subsection{Question}
-L'automate d'arbre produit correspondant au type donné en entrée est de taille ...TODO...
+Ayant une complexité en $O(n^2)$ pour la construction de Glushkov, et en entrée $n$ définitions,
+nous avons une complexité en temps en $O(n^3)$\footnotemark.
+Pour la complexité en espace, l'automate d'arbre produit correspondant
+au type donné en entrée serait de taille $O(TODO)$.
+
+\footnotetext{En supposant que la taille des expressions régulières
+est du même ordre de grandeur que le nombre de types.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

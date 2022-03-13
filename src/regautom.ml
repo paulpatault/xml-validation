@@ -44,16 +44,16 @@ let next_state r q c =
 let make_dfa r =
   let open AutomS in
   let r = Concat (r, Ident "#") in
-  let trans = ref Smap.empty in
+  let trans = ref DeltaMap.empty in
   let rec transitions q =
-    if not (Smap.mem q !trans) then (
-      trans := Smap.add q Cmap.empty !trans;
+    if not (DeltaMap.mem q !trans) then (
+      trans := DeltaMap.add q TransMap.empty !trans;
       Alphabet.iter
         (fun c ->
-          let t = Smap.find q !trans in
-          if not (Cmap.mem c t) then (
+          let t = DeltaMap.find q !trans in
+          if not (TransMap.mem c t) then (
             let q' = next_state r q c in
-            trans := Smap.add q (Cmap.add c q' t) !trans;
+            trans := DeltaMap.add q (TransMap.add c q' t) !trans;
             transitions q'))
         q)
   in
