@@ -34,38 +34,36 @@ let rec validate_td ?(debug = false) autom tree rac state =
       Format.eprintf "\nTaille liste : [%d]@." (Delta.cardinal trans);
     Delta.fold
       (fun q' acc ->
-        match q' with
-        | F (_, Some _, Some state_child, Some state_sibling) ->
-            let child = Tree.first_child tree in
-            let sibling = Tree.next_sibling tree in
-            let rac_child =
-              Utils.mk_state_str Format.pp_print_string (Tree.label child)
-            in
-            let rac_child = Alphabet.singleton rac_child in
-            let rac_sibling =
-              Utils.mk_state_str Format.pp_print_string (Tree.label sibling)
-            in
-            let rac_sibling = Alphabet.singleton rac_sibling in
-            acc
-            || validate_td ~debug autom child rac_child state_child
-               && validate_td ~debug autom sibling rac_sibling state_sibling
-        | F (_, Some _, Some state_child, None) ->
+        let b_child, b_sibling =
+          match q' with
+          | F (_, Some _, x, y) -> (x, y)
+          | _ ->
+              if debug then Format.eprintf "match dans tc.ml@.";
+              assert false
+        in
+
+        let c =
+          if Option.is_none b_child then false
+          else
             let child = Tree.first_child tree in
             let rac_child =
               Utils.mk_state_str Format.pp_print_string (Tree.label child)
             in
             let rac_child = Alphabet.singleton rac_child in
-            acc || validate_td ~debug autom child rac_child state_child
-        | F (_, Some _, None, Some state_sibling) ->
+            validate_td ~debug autom child rac_child (Option.get b_child)
+        in
+
+        let s =
+          if Option.is_none b_sibling then false
+          else
             let sibling = Tree.next_sibling tree in
             let rac_sibling =
               Utils.mk_state_str Format.pp_print_string (Tree.label sibling)
             in
             let rac_sibling = Alphabet.singleton rac_sibling in
-            acc || validate_td ~debug autom sibling rac_sibling state_sibling
-        | _ ->
-            if debug then Format.eprintf "match dans tc.ml@.";
-            false)
+            validate_td ~debug autom sibling rac_sibling (Option.get b_sibling)
+        in
+        acc || (c && s))
       trans false
 
 let check ?(debug = false) (autom : Tdef.AutomT.t) (tree : Tree.t) rac lrac =
