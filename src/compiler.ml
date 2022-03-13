@@ -1,7 +1,6 @@
 open Tdef
 open Utils
 
-
 (* remplissage de la table de hashage des types *)
 let mk_tbl ?(debug = false) (typ : DTD.t) =
   let tbl = Hashtbl.create 42 in
@@ -29,15 +28,18 @@ let mk_tbl ?(debug = false) (typ : DTD.t) =
   tbl
 
 (* compilation du fichier dtd vers un automate d'arbre *)
-let compile_typ ?(debug = false) (rac : string) (typ : DTD.t) : AutomT.t =
+let compile_typ ?(debug = false) (rac : string) (typ : DTD.t) :
+    AutomT.t * string =
   let table = mk_tbl ~debug typ in
 
   let automata = Tree_automata.empty () in
+  let rac_res = ref "" in
 
   Hashtbl.iter
     (fun ident (guard, regex) ->
       match guard with
       | Tdef.DTD.Label [ l ] -> (
+          if ident = rac then rac_res := l;
           Tree_automata.extends_sigma automata l;
 
           match Regautom.make_dfa regex with
@@ -84,4 +86,4 @@ let compile_typ ?(debug = false) (rac : string) (typ : DTD.t) : AutomT.t =
       | _ -> failwith "TODO")
     table;
 
-  automata
+  (automata, !rac_res)

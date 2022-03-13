@@ -7,12 +7,13 @@ let () =
 
   let tree = Tree.parse xml_file in
 
-  let automata =
+  let automata, rac' =
     open_in type_file
     |> Lexing.from_channel
     |> Parser.type_defs Lexer.token
     |> Compiler.compile_typ ~debug rac
   in
 
-  if Tc.check ~debug automata tree rac then printf "@.----------@.| valide |@.----------@."
+  if Tc.check ~debug automata tree rac' rac then
+    printf "@.----------@.| valide |@.----------@."
   else printf "@.--------------@.| non valide |@.--------------@."

@@ -1,0 +1,2 @@
+type a = A[ b* ]
+type b = B[]
