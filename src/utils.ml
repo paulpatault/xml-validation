@@ -11,7 +11,7 @@ let parse_args () =
   in
   (type_file, xml_file, rac, debug)
 
-let print_tree tree = printf "Tree::@[<v>@,%a@]@." Tree.pp tree
+let print_tree tree = printf "Tree::%a@." Tree.pp tree
 
 let print_autom autom =
   printf "@,Autom::@[<v>@,%a@]@." Tree_automata.Pprinter.pp_autom autom
