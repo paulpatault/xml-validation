@@ -17,3 +17,5 @@ let print_autom autom =
 
 let print_dtd_def fmt ident lab regex =
   Format.fprintf fmt "%s,%s,%s@," ident lab (Tdef.DTD.pp regex)
+
+let mk_state_str f s = Format.asprintf "q_%a" f s

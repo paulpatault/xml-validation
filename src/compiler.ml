@@ -1,6 +1,6 @@
 open Tdef
+open Utils
 
-let mk_state_str f s = Format.asprintf "q(%a)" f s
 
 (* remplissage de la table de hashage des types *)
 let mk_tbl ?(debug = false) (typ : DTD.t) =
@@ -11,7 +11,7 @@ let mk_tbl ?(debug = false) (typ : DTD.t) =
   List.iter
     (fun (ident, guard, regex) ->
       let lab = match guard with DTD.Label [ l ] -> l | _ -> "empty" in
-      if debug then Utils.print_dtd_def fmt ident lab regex;
+      if debug then print_dtd_def fmt ident lab regex;
 
       let guard', regex' =
         match Hashtbl.find_opt tbl ident with
@@ -66,7 +66,8 @@ let compile_typ ?(debug = false) (rac : string) (typ : DTD.t) : AutomT.t =
 
                       let sibling = if ident = rac then None else Some value in
                       let child =
-                        if regex = Tdef.DTD.Epsilon then None else Some ident
+                        if regex = Tdef.DTD.Epsilon then None
+                        else Some (mk_state_str Format.pp_print_string ident)
                       in
 
                       let cur = Some state in

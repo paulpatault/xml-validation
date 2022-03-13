@@ -31,4 +31,4 @@ let check ?(debug = false) (autom : Tdef.AutomT.t) tree rac =
     Utils.print_tree tree;
     Utils.print_autom autom);
 
-  validate_td autom tree (Alphabet.singleton rac) (Obj.magic ())
+  validate_td autom tree (Alphabet.singleton rac) (Utils.mk_state_str Format.pp_print_string rac)

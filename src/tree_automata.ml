@@ -17,7 +17,7 @@ module Pprinter = struct
   let rec pp_states fmt states =
     if not (States.is_empty states) then
       let state = States.choose states in
-      fprintf fmt "%a%a" pp_state state pp_states (States.remove state states)
+      fprintf fmt "%a, %a" pp_state state pp_states (States.remove state states)
 
   let pp_trans fmt trans =
     let open Transition in
@@ -49,7 +49,7 @@ let mk_automata ?states ?delta ?final ?sigma () =
   {
     states = value states ~default:States.empty;
     delta = value delta ~default:Delta.empty;
-    final = value final ~default:States.empty;
+    final = value final ~default:States.singleton None;
     sigma = value sigma ~default:Alphabet.empty;
   }
 
@@ -57,7 +57,12 @@ let empty () = mk_automata ()
 let extends_sigma automata i = automata.sigma <- Alphabet.add i automata.sigma
 let extends_states automata s = automata.states <- States.add s automata.states
 let extends_finals automata f = automata.final <- States.add f automata.final
-let extends_delta automata t = automata.delta <- Delta.add t automata.delta
+
+let extends_delta automata t =
+  match t with
+  | Transition.F (_, s1, s2, s3) | Transition.CoF (_, s1, s2, s3) ->
+      List.iter (extends_states automata) [ s1; s2; s3 ];
+      automata.delta <- Delta.add t automata.delta
 
 let extends automata = function
   | `Sigma s -> extends_sigma automata s
