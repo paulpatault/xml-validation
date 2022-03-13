@@ -6,6 +6,6 @@
  (flags (-v)))
 
 (library
- ; (flags :standard -w +a-4-32-33-37-42-70)
+ (flags :standard -w +a-4-26-32-33-37-40-42-70)
  (name mlib)
  (libraries xml-light))

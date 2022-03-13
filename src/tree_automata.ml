@@ -22,8 +22,11 @@ module Pprinter = struct
   let pp_trans fmt trans =
     let open Transition in
     match trans with
-    | CoF (alpha, state, s1, s2) | F (alpha, state, s1, s2) ->
-        fprintf fmt "{%a}, %a -> %a, %a" pp_alphabet alpha pp_state state
+    | CoF (alpha, state, s1, s2) ->
+        fprintf fmt "CoF{%a}, %a -> %a, %a" pp_alphabet alpha pp_state state
+          pp_state s1 pp_state s2
+    | F (alpha, state, s1, s2) ->
+        fprintf fmt "F{%a}, %a -> %a, %a" pp_alphabet alpha pp_state state
           pp_state s1 pp_state s2
 
   let rec pp_delta fmt delta =
