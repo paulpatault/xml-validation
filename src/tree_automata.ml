@@ -1,8 +1,9 @@
 open Tdef
-open Format
 open AutomT
 
+(* pretty printer pour un tree automata *)
 module Pprinter = struct
+  open Format
   let rec pp_alphabet fmt alpha =
     if not (Alphabet.is_empty alpha) then
       let al = Alphabet.choose alpha in
@@ -44,6 +45,7 @@ module Pprinter = struct
       pp_alphabet autom.sigma
 end
 
+(* smart constructor *)
 let mk_automata ?states ?delta ?final ?sigma () =
   let open Option in
   {
@@ -53,7 +55,9 @@ let mk_automata ?states ?delta ?final ?sigma () =
     sigma = value sigma ~default:Alphabet.empty;
   }
 
+(* alias *)
 let empty () = mk_automata ()
+(* enstension d'un autom *)
 let extends_sigma automata i = automata.sigma <- Alphabet.add i automata.sigma
 let extends_states automata s = automata.states <- States.add s automata.states
 let extends_finals automata f = automata.final <- States.add f automata.final
@@ -66,9 +70,3 @@ let extends_delta automata t =
       (* List.iter (Format.eprintf "(%a)@;" Pprinter.pp_state) [ s1; s2; s3 ]; *)
       (* Format.eprintf "@]@."; *)
       automata.delta <- Delta.add t automata.delta
-
-let extends automata = function
-  | `Sigma s -> extends_sigma automata s
-  | `States s -> extends_states automata s
-  | `Finals f -> extends_finals automata f
-  | `Trans d -> extends_delta automata d

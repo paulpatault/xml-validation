@@ -1,5 +1,6 @@
 open Tdef
 
+(* variable de debuging *)
 let i = ref 0
 let sp () = Format.eprintf "\n----------------\n----------------\n"
 
@@ -11,11 +12,10 @@ let rec validate_td ?(debug = false) autom tree rac state =
     Utils.print_tree tree;
     Format.eprintf "rac::%a\nstr::%s\n@." Tree_automata.Pprinter.pp_alphabet rac
       state);
-  let open AutomT in
   if Tree.is_empty tree then true (* is_final state*)
   else
     let trans =
-      Delta.filter
+      AutomT.Delta.filter
         (fun x ->
           match x with
           | F (rac', Some str, _, _) when rac' = rac && state = str ->
@@ -28,11 +28,11 @@ let rec validate_td ?(debug = false) autom tree rac state =
                 Format.eprintf "trans NOTOK : %a@."
                   Tree_automata.Pprinter.pp_trans x;
               false)
-        autom.delta
+        AutomT.(autom.delta)
     in
     if debug then
-      Format.eprintf "\nTaille liste : [%d]@." (Delta.cardinal trans);
-    Delta.fold
+      Format.eprintf "\nTaille liste : [%d]@." (AutomT.Delta.cardinal trans);
+    AutomT.Delta.fold
       (fun q' acc ->
         let b_child, b_sibling =
           match q' with
@@ -42,7 +42,7 @@ let rec validate_td ?(debug = false) autom tree rac state =
               assert false
         in
 
-        let c =
+        let child_validation =
           if Option.is_none b_child then false
           else
             let child = Tree.first_child tree in
@@ -53,7 +53,7 @@ let rec validate_td ?(debug = false) autom tree rac state =
             validate_td ~debug autom child rac_child (Option.get b_child)
         in
 
-        let s =
+        let sibling_validation =
           if Option.is_none b_sibling then false
           else
             let sibling = Tree.next_sibling tree in
@@ -63,7 +63,7 @@ let rec validate_td ?(debug = false) autom tree rac state =
             let rac_sibling = Alphabet.singleton rac_sibling in
             validate_td ~debug autom sibling rac_sibling (Option.get b_sibling)
         in
-        acc || (c && s))
+        acc || (child_validation && sibling_validation))
       trans false
 
 let check ?(debug = false) (autom : Tdef.AutomT.t) (tree : Tree.t) rac lrac =

@@ -1,4 +1,6 @@
 type label = string
+
+(* j'ai retiré le type node *)
 type t = Node of label * t * t | Leaf
 
 (* pretty printer *)
