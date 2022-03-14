@@ -41,11 +41,11 @@ remarques.}
 
 \subsubsection{Fichiers DTD}
 
-L'extension \texttt{dtd} est utilisé comme abus de langage mais clarifie les choses.
+L'extension \texttt{.dtd} est utilisé comme abus de langage mais clarifie les choses.
 La syntaxe est simple, un type commence par le mot clé \og\texttt{type}\fg{} suivi
 par le nom donné à ce dernier, ensuite un signe \og\texttt{=}\fg{} puis le nom de
 la balise et enfin entre \og\texttt{[]}\fg{} se trouve une expression régulière
-(où \og\texttt{*}\fg{} est le symbole classique, \og\texttt{|}\fg{} indique
+(où \og\texttt{*}\fg{} est l'étoile de Kleene, \og\texttt{|}\fg{} indique
 l'alternative et \og\texttt{+}\fg{} la concaténation).
 Voici un fichier \texttt{.dtd} qui sera accepté par le parser:
   \begin{minted}[baselinestretch=1.2,fontsize=\small, escapeinside=\/, mathescape=true]{xml}
@@ -202,8 +202,8 @@ de ce n\oe{}ud et récursivement.
    n-aires vers des arbres binaires}
 \end{algorithm}
 
-Pour la compilation des expressions régulières, nous utilisons la construction
-de Berry-Sethi \footnote{Elle semble être la même que celle de Glushkov)}.
+Pour la compilation des expressions régulières, nous utilisons la construction trouvée sous
+le nom de Berry-Sethi\footnotemark.
 Celle-ci est efficace, et n'a pas le défaut de Thompson en générant des transitions
 epsilon qu'il aurait par la suite fallut supprimer.
 Le code se trouve dans le fichier \texttt{src/regautomata.ml} et parle de lui-même, nous n'allons
@@ -211,10 +211,7 @@ donc pas le présenter plus en détails.
 
 Enfin pour la compilation des types \textit{à la} DTD en eux même,
 la solution n'est pas encore très claire. Arrivé seul à la même idée
-que celle proposé dans le message sur e-campus
-\footnote{Message que je n'ai pu découvrir que ce dimanche, n'ayant
-pas eu de notification relative aux messages, probablement dû à leur
-caractère \og semi-privés \fg{} sur e-campus.},
+que celle proposé dans le message sur e-campus\footnotemark,
 l'avancement s'est fait à tâtons et aucune conclusion n'est envisageable dans l'immédiat.
 
 L'implémentation est donc une tentative d'application d'une idée vague relativement similaire à
@@ -227,6 +224,10 @@ nous tentons d'encoder ces états dans les transitions de notre automate d'arbre
 Cependant, il doit y avoir une erreur à ce niveau dans le code, mais la localisation précise
 ce bogue pose encore problème.
 
+\footnotetext{Celle-ci semble être la même que celle de Glushkov.}
+\footnotetext{Message que je n'ai pu découvrir que ce dimanche, n'ayant
+pas eu de notification relative aux messages, probablement dû à leur
+caractère \og semi-privés \fg{} sur e-campus.}
 
 
 \subsection{Question}
@@ -240,4 +241,18 @@ est du même ordre de grandeur que le nombre de types.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\section{Implémentation}
+
+Le code se trouve dès la racine de ce répertoire, les fichiers sources sont
+dans le dossier \texttt{src/} et le \textit{main} est le fichier \texttt{validate.ml}
+se trouvant lui dans le dossier \texttt{bin/}. L'architecture globale est
+classique, respectant notament les informations proposées par la documentation
+du builder \texttt{dune}.
+Des explications pour utiliser ce code se trouvent dans le fichier \texttt{README.md}
+à la racine du projet.
+
+Enfin, presque tout a été codé, mais du à un bogue dans la compilation des types,
+rien n'est completement fonctionnel.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
