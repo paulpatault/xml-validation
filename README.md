@@ -16,7 +16,7 @@ cd xml-validation
 
 Exécution directe et simple :
 ```bash
-dune exec bin/validate.exe [fichier dtd] [fichier xml] [racine]
+dune exec bin/validate.exe [fichier dtd] [fichier xml] [racine] [debug-mode]
 # par exemple :
 dune exec bin/validate.exe tests/ex.dtd tests/1.xml hd
 ```
@@ -24,7 +24,7 @@ dune exec bin/validate.exe tests/ex.dtd tests/1.xml hd
 Récupération de l'exécutable :
 ```bash
 make install
-./validate [fichier dtd] [fichier xml] [racine]
+./validate [fichier dtd] [fichier xml] [racine] [debug-mode]
 # par exemple :
 ./validate tests/ex.dtd tests/1.xml hd
 ```

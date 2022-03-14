@@ -36,10 +36,10 @@ let compile_typ ?(debug = false) (rac : string) (typ : DTD.t) :
 
   Hashtbl.iter
     (fun ident (guard, regex) ->
-      Format.eprintf "GLoop::::%s@." ident;
+      if debug then Format.eprintf "GLoop::::%s@." ident;
       match guard with
       | Tdef.DTD.Label [ l ] -> (
-          Format.eprintf "\t::::%s@." l;
+        if debug then Format.eprintf "\t::::%s@." l;
           if ident = rac then rac_res := l;
           Tree_automata.extends_sigma automata l;
 
@@ -57,11 +57,11 @@ let compile_typ ?(debug = false) (rac : string) (typ : DTD.t) :
 
               AutomS.DeltaMap.iter
                 (fun state nexts ->
-                  Format.eprintf "\t::::--iter@.";
+                  if debug then Format.eprintf "\t::::--iter@.";
                   (* iteration sur les transitions *)
                   AutomS.TransMap.iter
                     (fun _ value ->
-                      Format.eprintf "\t::::----subiter@.";
+                      if debug then Format.eprintf "\t::::----subiter@.";
                       let state =
                         mk_state_str Tree_automata.Pprinter.pp_alphabet state
                       in
@@ -70,7 +70,7 @@ let compile_typ ?(debug = false) (rac : string) (typ : DTD.t) :
                       in
 
                       let sibling = if ident = rac then None else
-                        (Format.eprintf "val::(%s)@." value; Some value) in
+                        (if debug then Format.eprintf "val::(%s)@." value; Some value) in
 
                       let child =
                         if regex = Tdef.DTD.Epsilon then None
@@ -87,7 +87,7 @@ let compile_typ ?(debug = false) (rac : string) (typ : DTD.t) :
                       Tree_automata.extends_delta automata trans)
                     nexts)
                 AutomS.(dfa.trans)
-          | None -> Format.eprintf "compiler.match : NONE...@.")
+          | None -> if debug then Format.eprintf "compiler.match : NONE...@.")
       | _ -> failwith "TODO")
     table;
 
